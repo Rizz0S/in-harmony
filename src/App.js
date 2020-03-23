@@ -9,13 +9,16 @@ import ProfileContainer from './Containers/ProfileContainer';
 import About from './Static/About';
 import GeneratorContainer from './Containers/GeneratorContainer';
 import Gallery from './Containers/Gallery';
-import NavBar from './Components/NavBar'
+import NavBar from './Components/NavBar';
 import Form from './Components/UserForm';
 import NotFound from './Static/NotFound';
 import Footer from './Static/Footer'
 
 class App extends React.Component {
 
+  state = {
+    showNavBar: false
+  }
 
   componentDidMount() {
     
@@ -54,6 +57,7 @@ class App extends React.Component {
         if (resp.token) {
           localStorage.token = resp.token;
           this.props.setUser(resp)
+          this.props.history.push("/");
         } else {
           alert(resp.error)
         }
@@ -74,17 +78,25 @@ class App extends React.Component {
           localStorage.token = resp.token;
           this.props.setUser(resp);
           this.props.history.push("/");
-        } 
+        } else {
+          alert(resp.error)
+        }
       })
   }
 
   handleLogOut = () => {
     localStorage.clear();
-    this.props.setUser({username: "", id: 0, palettes: []});
+    this.props.setUser({
+      user: {
+        username: "",
+        id: 0,
+        palettes: []
+      },
+      token: ""
+    })
     this.props.history.push("/");
   
   }
-
 
   renderForm = (routerProps) => {
     if(routerProps.location.pathname === "/login"){
@@ -96,20 +108,19 @@ class App extends React.Component {
 
   renderProfile = (routerProps) => {
     return  (
-      <ProfileContainer 
-      />
+      <ProfileContainer  />
     )
   }
-
 
   render() {
     return (
       <div className="App">
+        {/* <img src={process.env.PUBLIC_URL + '/logo.png'} alt="click to show navigation bar" className="nav-toggle-img" onClick={this.handleShowNavClick}/> */}
         <div className="navContainer">
-          <NavBar 
-            handleLogOut={this.handleLogOut} 
-          />
-        </div>
+            <NavBar 
+              handleLogOut={this.handleLogOut} 
+            />
+        </div> 
         <div className="mainContent">
           <Switch>
             <Route path="/login" render={ this.renderForm } />
@@ -134,9 +145,16 @@ class App extends React.Component {
 
 const setUser = (resp) => {
     return {
-      type: "SET_USER",
+      type: 'SET_USER',
       payload: resp
     }
 }
 
-export default withRouter(connect(null, {setUser})(App))
+const setPalettes = (resp) => {
+  return {
+    type: 'SET_PALETTES',
+    payload: resp
+  }
+}
+
+export default withRouter(connect(null, {setUser, setPalettes})(App))

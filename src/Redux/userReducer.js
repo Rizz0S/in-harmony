@@ -2,7 +2,8 @@ let initialState = {
   user: {
     username: "",
     id: 0,
-    palettes: []
+    user_palettes: [],
+    liked_palettes: []
   },
   token: ""
 }
@@ -16,15 +17,25 @@ const userReducer = (state = initialState, action) => {
           user: action.payload.user,
           token: action.payload.token
         }
-  
-    //   case "ADD_PALETTE":
-    //       return {
-    //         ...state,
-    //         user: {
-    //           ...state.user,
-    //           palettes: [...state.user.palettes, action.payload]
-    //         }
-    //       }
+
+      case "ADD_USER_PALETTE":
+        return{
+          ...state,
+          user: {...state.user, user_palettes: [...state.user.user_palettes, action.payload]}
+        }
+      
+      case "LIKE_PALETTE":
+        return{
+          ...state,
+          user: {...state.user, liked_palettes: [...state.user.liked_palettes, action.payload]}
+        }
+      
+      case "UNLIKE_PALETTE":
+        const updatedLikedPalettes = state.user.liked_palettes.filter((palette) => palette.id !== action.payload.id);
+        return{
+          ...state,
+          user: {...state.user, liked_palettes: updatedLikedPalettes}
+        }
   
       default:
         return state

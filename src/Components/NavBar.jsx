@@ -4,47 +4,38 @@ import {NavLink} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 const NavBar = (props) => {
-  if (props.user.id === 0) {
     return(
       <ul className="nav">
-        <li className="grow">
+        <li>
           <NavLink to="/about">About</NavLink>
         </li>
-        <li className="grow">
+        <li>
           <NavLink to="/" exact>Palette Generator</NavLink>
         </li>
-        <li className="grow">
+        <li>
           <NavLink to="/gallery">Gallery</NavLink>
         </li>
-        <li className="grow">
+        { props.user.id === 0 ? 
+        <>
+        <li>
           <NavLink to="/login">Login</NavLink>
         </li>
-        <li className="grow">
+        <li>
           <NavLink to="/register">Register</NavLink>
+        </li> 
+        </>
+        :
+        <>
+        <li>
+        <NavLink to="/profile">Profile</NavLink>
         </li>
-      </ul>
-    )
-  } else {
-    return(
-      <ul className="nav">
-        <li className="grow">
-          <NavLink to="/about">About</NavLink>
-        </li>
-        <li className="grow">
-          <NavLink to="/" exact >Fractal Machine</NavLink>
-        </li>
-        <li className="grow">
-          <NavLink to="/gallery">Gallery</NavLink>
-        </li>
-        <li className="grow">
-          <NavLink to="/profile">Profile</NavLink>
-        </li>
-        <li className="grow">
+        <li>
           <NavLink to="/" onClick={props.handleLogOut}>Log Out</NavLink>
         </li>
+        </>
+        }
       </ul>
     )
-  }
 };
 
 const mapStateToProps = (state) => {

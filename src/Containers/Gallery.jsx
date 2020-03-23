@@ -1,25 +1,32 @@
 import React from 'react';
 import PaletteCard from '../Components/PaletteCard';
+import {connect} from 'react-redux'
 
 const Gallery = (props) => {
-
     const renderPaletteCards = () => {
-        const arrOfPaletteCards = []
-    
-        for (let i = 0; i < 4; i++) {
-          arrOfPaletteCards.push(<PaletteCard 
-            context="gallery"
-          />)
-        }
-    
-        return arrOfPaletteCards;
-      }
+      return props.palettes.map((palette) => {
+        return <PaletteCard
+          key={palette.id}
+          palette={palette}
+          context="gallery"
+          />
+      })
+    }
     
       return (
+        <>
+        <h3>Welcome to the gallery. Browse around.</h3>
         <div className="palette-card-container" >
           {renderPaletteCards()}
         </div>
+        </>
       )
 }
 
-export default Gallery;
+const mapStateToProps = (state) => {
+  return {
+    palettes: state.palettesInfo.all
+  }
+}
+
+export default connect(mapStateToProps)(Gallery);
