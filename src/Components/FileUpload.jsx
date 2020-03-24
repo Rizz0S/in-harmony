@@ -1,16 +1,23 @@
 import React, { useRef } from 'react';
 
+const BYTES_PER_MB = 1_000_000;
+
 const FileUpload = (props) => {
   
     const fileInput = useRef(null);
 
     const initHandleFileUpload = (e) => {
       e.preventDefault();
-      
-      readFile(fileInput.current.files[0])
-        .then((response) => {
-        	 props.handleFileUpload(response.dataURL)
-    		});
+      const fileSize = (fileInput.current.files[0].size / BYTES_PER_MB);
+
+      if (fileSize > 2) {
+        alert("I'm sorry, but currently only files smaller 2MB are accepted.")
+      } else if (fileInput.current.files[0]) {
+          readFile(fileInput.current.files[0])
+            .then((response) => {
+              props.setUploadedFile(response.dataURL)
+            });
+      }
     }
 
     const readFile = (file) => {

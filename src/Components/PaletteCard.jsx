@@ -1,5 +1,6 @@
-import React from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import ReactCardFlip from 'react-card-flip';
 
 
 const PaletteCard = (props) => {
@@ -12,6 +13,7 @@ const PaletteCard = (props) => {
   const token = useSelector( (state) => state.userInfo.token)
 
   const liked = user.liked_palettes.find((liked_palette) => props.palette.id === liked_palette.id)
+  const [cardFlipped, setCardFlipped] = useState(false);
 
   const renderCardSwatches = () => {
     return color_hexes.map((color, idx) => {
@@ -23,7 +25,18 @@ const PaletteCard = (props) => {
     })
   }
 
-  console.log(name, " is liked?", !!liked)
+  const renderColorHexes = () => {
+    return color_hexes.map((color, idx) => {
+      return <div
+        className="card-hex-background"
+        key={color + idx}
+        style={{backgroundColor: color}}
+        >
+          <div className="card-hex">{color.toUpperCase()}</div>
+       </div>
+    })
+  }
+
   const handleLike = () => {
 
     if (!liked) {
@@ -63,18 +76,41 @@ const PaletteCard = (props) => {
         }
         })
     }
+  }
 
+  const handleCardFlip = () => {
+    setCardFlipped(!cardFlipped);
   }
 
 
 
   return (
-    <div className="palette-card" >
-      <p>{name}</p>
-      {renderCardSwatches()}
-      {props.context === "gallery" ? <p>created by: {username}</p> : null}
-      <div className="like-button" onClick={handleLike}> {liked ? "♥" : "♡" } </div>
-    </div>
+    <ReactCardFlip 
+      containerStyle={{margin: "10px auto", height: 230}}
+      isFlipped={cardFlipped} 
+      flipDirection="vertical" 
+      flipSpeedBackToFront={0.8}
+      flipSpeedBackToBack={0.8}
+      infinite={true}
+    >
+
+      <div className="palette-card-front">
+        <div className="card-swatch-wrapper">
+          <p style={{position: "absolute", transform: "translate(-50%, -100%)", left: "50%", marginTop: -20}}>{name}</p>
+          {renderCardSwatches()}
+        </div>
+         <i className="material-icons flip-card" onClick={handleCardFlip}>flip_to_back</i>
+        <div className="like-button" onClick={handleLike}> {liked ? "♥" : "♡" } </div>
+      </div>
+
+      <div className="palette-card-back">
+        {renderColorHexes()}
+        {props.context === "gallery" ? <p>created by: {username}</p> : null}
+        <i className="material-icons flip-card" onClick={handleCardFlip}>flip_to_front</i>
+        <div className="like-button" onClick={handleLike}> {liked ? "♥" : "♡" } </div>
+      </div>
+
+    </ReactCardFlip>
   )
 
 }

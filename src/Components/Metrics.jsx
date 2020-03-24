@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import debounceRender from 'react-debounce-render';
 import chroma from 'chroma-js';
+import SavePaletteModal from './SavePaletteModal';
+import _ from 'lodash';
 
 
 // ACCESSIBILITY METRICS
@@ -58,16 +61,23 @@ const findOutOfRangeHues = (palette) =>{
     })
 }
 
- function Metrics (props) {
+function Metrics (props) {
 
+    const dispatch = useDispatch();
+    const token = useSelector( (state) => state.userInfo.token);
+
+    // conditional rendering state for pop up modal
+    const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(true);
-    
+
     let metrics = {
         minContrast: [],
         maxContrast: []
     };
 
-    const paletteArr = Object.values(props.currentPalette);
+    let {currentPalette, numColors} = props;
+
+    const paletteArr = Object.values(currentPalette).slice(0, numColors);
 
     metrics = findMinAndMaxContrast(paletteArr);
 
@@ -89,6 +99,41 @@ const findOutOfRangeHues = (palette) =>{
         setTimeout(() => {setLoading(false)}, 1500)
     }, [setLoading])
 
+    const handleModalClick = () => {
+        setShowModal(!showModal)
+    }
+
+    const persistPalette = (paletteName) => {
+        let hexArr = _.map(currentPalette, (swatchColor) => {
+           return chroma(swatchColor).hex()
+        })
+
+        hexArr = hexArr.slice(0, numColors)
+        const isColorblindAccessible = problemPairings.length === 0;
+
+        fetch('http://localhost:4000/palettes', {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: paletteName,
+                colors: hexArr,
+                colorblind_accessible: isColorblindAccessible
+            })
+        })
+        .then(r => r.json())
+        .then(resp => {
+            if (resp.message) {
+                alert(resp.message)
+            } else {
+                dispatch(addPalette(resp))
+                dispatch(addUserPalette(resp))
+            }
+        })
+    }
+
     return (
             <div className="metrics-container">
                 <h2 className="generator-header">Metrics</h2>
@@ -98,13 +143,23 @@ const findOutOfRangeHues = (palette) =>{
                     <div key={metrics.minContrast[0] + 1} className="card-swatch" style={{backgroundColor: chroma(metrics.minContrast[1]).hex()}}/>
                     <div key={metrics.minContrast[0] + 2} className="card-swatch" style={{backgroundColor: chroma(metrics.minContrast[2]).hex()}}/>
                 </div>
-                <p><div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i><div className="WCAG-info">It must be at least 4.5</div></div>WCAG compliant: {metrics.minContrast[3] ? "✓" : "✕" }</p>
+                <div>
+                    <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
+                        <div className="WCAG-info">It must be at least 4.5</div>
+                    </div>
+                    WCAG compliant: {metrics.minContrast[3] ? "✓" : "✕" }
+                </div>
                 <p>The maximum ratio contrast ratio is: <b>{metrics.maxContrast[0].toFixed(2)}</b></p>
                 <div>
                     <div key={metrics.maxContrast[0] + 1} className="card-swatch" style={{backgroundColor: chroma(metrics.maxContrast[1]).hex()}}/>
                     <div key={metrics.maxContrast[0] + 2} className="card-swatch" style={{backgroundColor: chroma(metrics.maxContrast[2]).hex()}}/>
                 </div>
-                <p><div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i><div className="WCAG-info">It must be at least 4.5</div></div>WCAG compliant:  {metrics.maxContrast[3] ? "✓" : "✕" }</p>
+                <div>
+                    <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
+                        <div className="WCAG-info">It must be at least 4.5</div>
+                    </div>
+                    WCAG compliant:  {metrics.maxContrast[3] ? "✓" : "✕" }
+                </div>
                 <h3><i>Color Blindness</i></h3>
                 {problemPairings.length > 0 ? 
                     <>
@@ -114,11 +169,32 @@ const findOutOfRangeHues = (palette) =>{
                     </div>
                     </>
                 :
-                    <p>Your palette is currently color-blind accessible. :^}</p>
+                    <p className="problem-pairing-container">Your palette is currently color-blind accessible. :^}</p>
                 }
-
+            <button className = "save-palette-btn" onClick={handleModalClick}>Save to Gallery</button>
+            {showModal ? 
+                <SavePaletteModal 
+                    handleModalClick={handleModalClick}
+                    persistPalette={persistPalette}
+            /> :
+            null
+            }       
             </div>
     )    
+}
+
+const addPalette = (palette) => {
+    return {
+      type: "ADD_PALETTE",
+      payload: palette
+    }
+}
+
+const addUserPalette = (palette) => {
+    return {
+      type: "ADD_USER_PALETTE",
+      payload: palette
+    }
 }
 
 export default debounceRender(Metrics, 1500)

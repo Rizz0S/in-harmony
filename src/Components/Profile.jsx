@@ -18,15 +18,15 @@ const Profile = (props) => {
 
   return (
     <div>
-      <p>Hello, <b>{user.username}</b>.</p>
+      <h2>Hello, <b>{user.username}</b>.</h2>
 
-      <h3>Liked Palettes:</h3>
+      <p>Liked Palettes:</p>
       <div className="palette-card-container">
-      {user.liked_palettes.length > 0 ? renderPaletteCards(user.liked_palettes) : <p>You haven't liked any palettes yet.</p>}
+        { user.liked_palettes.length > 0 ? renderPaletteCards(user.liked_palettes) : <p style={{width: "100%"}}>You haven't liked any palettes yet.</p> }
       </div>
-      <h3>Your Palettes: </h3>
+      <p>Your Palettes: </p>
       <div className="palette-card-container">
-      {renderPaletteCards(user.user_palettes)}
+        { user.user_palettes.length > 0 ? renderPaletteCards(user.user_palettes) : <p style={{width: "100%"}}>You haven't made any palettes yet.</p> }
       </div>
     </div>
   )

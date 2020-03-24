@@ -17,10 +17,6 @@ const GeneratorContainer = (props) => {
         color6: {r: 255, b: 255, g: 255}
     });
 
-    const handleFileUpload = (uploadedFile) => {
-        setUploadedFile(uploadedFile)
-    }
-
     const handleAdjustColorNum = (e) => {
         if (e.target.className === "subtract-col" && numColors > 4) {
             setNumColors(numColors - 1);
@@ -36,7 +32,7 @@ const GeneratorContainer = (props) => {
             <h2 className="generator-header">Build a Palette</h2>
             <p>You can upload an image, start from scratch, or a mix of the two.</p>
             <FileUpload 
-                handleFileUpload={handleFileUpload}
+                setUploadedFile={setUploadedFile}
             />
             <p className="num-colors-params">[min: 4]</p>
             <button className="subtract-col" onClick={handleAdjustColorNum}> - </button>
@@ -51,6 +47,7 @@ const GeneratorContainer = (props) => {
             </div>            
             <Metrics
                 currentPalette={currentPalette}
+                numColors={numColors}
             />
         </div>
     )

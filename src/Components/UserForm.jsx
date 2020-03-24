@@ -1,41 +1,36 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Form extends Component {
+const Form = (props) => {
 
-  state = {
-    username: "",
-    password: ""
-  }
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    this.props.handleSubmit(this.state)
+    props.handleSubmit({username: username, password: password})
   }
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     let {name, value} = e.target
-    this.setState({
-      [name]: value
-    })
+    if (name === "username") {
+      setUsername(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
   }
 
-  render() {
-    let {formName} = this.props
-    let {username, password} = this.state
-
-    return (
-      <form className="login-register-form" onSubmit={this.handleSubmit}>
-        <h1>{formName}</h1>
+  return (
+      <form className="login-register-form" onSubmit={handleSubmit}>
+        <h1>{props.formName === "login" ? "Hello again." : "Welcome."}</h1>
         <label htmlFor="username">Username:
-        <input type="text" autoComplete="off" name="username" value={username} onChange={this.handleChange}/>
+        <input type="text" autoComplete="off" name="username" value={username} onChange={handleChange}/>
         </label>
         <label htmlFor="password">Password:
-        <input type="password" autoComplete="off" name="password" value={password} onChange={this.handleChange}/>
+        <input type="password" autoComplete="off" name="password" value={password} onChange={handleChange}/>
         </label>
         <input type="submit" value="Submit"/>
       </form>
     );
-  }
 
 }
 

@@ -5,7 +5,7 @@ import {Route, Switch} from 'react-router-dom';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux'
 
-import ProfileContainer from './Containers/ProfileContainer';
+import Profile from './Components/Profile';
 import About from './Static/About';
 import GeneratorContainer from './Containers/GeneratorContainer';
 import Gallery from './Containers/Gallery';
@@ -90,7 +90,8 @@ class App extends React.Component {
       user: {
         username: "",
         id: 0,
-        palettes: []
+        user_palettes: [],
+        liked_palettes: []
       },
       token: ""
     })
@@ -100,22 +101,17 @@ class App extends React.Component {
 
   renderForm = (routerProps) => {
     if(routerProps.location.pathname === "/login"){
-      return <Form formName="Login Form" handleSubmit={this.handleLoginSubmit}/>
+      return <Form formName="login" handleSubmit={this.handleLoginSubmit}/>
     } else if (routerProps.location.pathname === "/register") {
-      return <Form formName="Register Form" handleSubmit={this.handleRegisterSubmit}/>
+      return <Form formName="register" handleSubmit={this.handleRegisterSubmit}/>
     }
   }
 
-  renderProfile = (routerProps) => {
-    return  (
-      <ProfileContainer  />
-    )
-  }
 
   render() {
     return (
       <div className="App">
-        {/* <img src={process.env.PUBLIC_URL + '/logo.png'} alt="click to show navigation bar" className="nav-toggle-img" onClick={this.handleShowNavClick}/> */}
+        <img src={process.env.PUBLIC_URL + '/logo.png'} alt="click to show navigation bar" className="nav-toggle-img" onClick={this.handleShowNavClick}/>
         <div className="navContainer">
             <NavBar 
               handleLogOut={this.handleLogOut} 
@@ -130,7 +126,7 @@ class App extends React.Component {
               <Gallery 
               />
             </Route>
-            <Route path="/profile" render={ this.renderProfile } />
+            <Route path="/profile" component={ Profile } />
             <Route path="/" exact>
               <GeneratorContainer /> 
             </Route>

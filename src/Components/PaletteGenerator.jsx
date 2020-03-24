@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {connect, useDispatch} from 'react-redux';
+import React, { useEffect } from 'react';
 import Swatch from './Swatch';
-import SavePaletteModal from './SavePaletteModal';
-import getPixels from 'get-pixels';
-import _ from 'lodash';
-import chroma from 'chroma-js';
 
+import getPixels from 'get-pixels';
 
 const DEFAULT_DEPTH = 3;
 const DEFAULT_COL = {r: 255, b: 255, g: 255};
@@ -130,11 +126,6 @@ const quantize = (rgbArr, depth=0, maxDepth=DEFAULT_DEPTH) => {
 
 const PaletteGenerator = (props) => {
 
-    const dispatch = useDispatch();
-
-    // conditional rendering state for pop up modal
-    const [showModal, setShowModal] = useState(false);
-
     const {currentPalette, setCurrentPalette, uploadedFile, numColors} = props;
 
     useEffect(() =>  {
@@ -164,39 +155,6 @@ const PaletteGenerator = (props) => {
         },)
     }
 
-    const handleModalClick = () => {
-        setShowModal(!showModal)
-    }
-
-    const persistPalette = (paletteName) => {
-        let hexArr = _.map(currentPalette, (swatchColor) => {
-           return chroma(swatchColor).hex()
-        })
-
-        hexArr = hexArr.slice(0, numColors)
-        fetch('http://localhost:4000/palettes', {
-            method: "POST",
-            headers: {
-                "content-type": "application/json",
-                "Authorization": `Bearer ${props.token}`
-            },
-            body: JSON.stringify({
-                name: paletteName,
-                colors: hexArr,
-                colorblind_accessible: true
-            })
-        })
-        .then(r => r.json())
-        .then(resp => {
-            if (resp.message) {
-                alert(resp.message)
-            } else {
-                dispatch(addPalette(resp))
-                dispatch(addUserPalette(resp))
-            }
-        })
-    }
-
     const renderSwatches = () => {
         const swatchArr = [];
         for (let i = 1; i <= numColors; i++) {
@@ -215,39 +173,11 @@ const PaletteGenerator = (props) => {
             <div className="palette-container">
                 {renderSwatches()}
             </div>
-            <button className = "save-palette-btn" onClick={handleModalClick}>Save to Gallery</button>
-            {showModal ? 
-                <SavePaletteModal 
-                    handleModalClick={handleModalClick}
-                    persistPalette={persistPalette}
-            /> :
-            null
-            }            
         </div>
     )
     
 
 } // end of PaletteGenerator class
 
-const mapStateToProps = (state) => {
-    return {
-      user: state.userInfo.user,
-      token: state.userInfo.token
-    }
- }
 
-const addPalette = (palette) => {
-    return {
-      type: "ADD_PALETTE",
-      payload: palette
-    }
-}
-
-const addUserPalette = (palette) => {
-    return {
-      type: "ADD_USER_PALETTE",
-      payload: palette
-    }
-}
-
-export default connect(mapStateToProps, {addPalette})(PaletteGenerator);
+export default PaletteGenerator;
