@@ -6,12 +6,12 @@ const Profile = (props) => {
 
   const user = useSelector( (state) => state.userInfo.user)
 
-  const renderPaletteCards = (palettesArr) => {
+  const renderPaletteCards = (palettesArr, liked) => {
     return palettesArr.map((palette) => {
       return <PaletteCard
         key={palette.id}
         palette={palette}
-        context="profile"
+        context={liked ? "showCreator" : null}
         />
     })
   }
@@ -22,7 +22,7 @@ const Profile = (props) => {
 
       <p>Liked Palettes:</p>
       <div className="palette-card-container">
-        { user.liked_palettes.length > 0 ? renderPaletteCards(user.liked_palettes) : <p style={{width: "100%"}}>You haven't liked any palettes yet.</p> }
+        { user.liked_palettes.length > 0 ? renderPaletteCards(user.liked_palettes, true) : <p style={{width: "100%"}}>You haven't liked any palettes yet.</p> }
       </div>
       <p>Your Palettes: </p>
       <div className="palette-card-container">

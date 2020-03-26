@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Swatch from './Swatch';
 
 import getPixels from 'get-pixels';
@@ -127,42 +127,48 @@ const quantize = (rgbArr, depth=0, maxDepth=DEFAULT_DEPTH) => {
 const PaletteGenerator = (props) => {
 
     const {currentPalette, setCurrentPalette, uploadedFile, numColors} = props;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() =>  {
         if (uploadedFile.length > 0) {
-            getPixelsAndConvertToRGB(uploadedFile)
-            .then((rgbArr) => {
-                const result = quantize(rgbArr)
-                const final = result.slice(1, numColors).concat(result[result.length - 1]);
-                const paletteToSet = final.reduce((acc, current, idx) => {
-                    acc[`color${idx + 1}`] = current;
-                    return acc;
-                }, {})
-                if (numColors < 6) {
-                    for (let i = numColors; i <= 6; i++) {
-                        paletteToSet[`color${i + 1}`] = DEFAULT_COL;
+            setLoading(true);
+            setTimeout( () => {
+                getPixelsAndConvertToRGB(uploadedFile)
+                .then((rgbArr) => {
+                    const result = quantize(rgbArr);
+                    const final = result.slice(1, numColors).concat(result[result.length - 1]);
+                    const paletteToSet = final.reduce((acc, current, idx) => {
+                        acc[`color${idx + 1}`] = current;
+                        return acc;
+                    }, {})
+                    if (numColors < 6) {
+                        for (let i = numColors; i <= 6; i++) {
+                            paletteToSet[`color${i + 1}`] = DEFAULT_COL;
+                        }
                     }
-                }
-                setCurrentPalette(paletteToSet);
-            })
+                    setCurrentPalette(paletteToSet);
+                    setLoading(false);
+                })
+            }, 100)
         }
-    }, [uploadedFile, setCurrentPalette, numColors])
+    }, [uploadedFile, setCurrentPalette, numColors, setLoading])
 
     const changeSwatchColor = (color, id) => {
         setCurrentPalette({
             ...currentPalette,
             [`color${id}`]: color
-        },)
+        })
     }
 
     const renderSwatches = () => {
         const swatchArr = [];
         for (let i = 1; i <= numColors; i++) {
             swatchArr.push(<Swatch
-            key={'swatch' + i}
+            key={i}
             id={i}
             color={`rgb(${currentPalette[`color${i}`].r}, ${currentPalette[`color${i}`].g}, ${currentPalette[`color${i}`].b})`}
             changeSwatchColor={changeSwatchColor}
+            loading={loading}
         />)
         }
         return swatchArr;

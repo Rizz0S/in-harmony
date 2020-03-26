@@ -13,6 +13,8 @@
     "material-design-icons": "^3.0.1",
     "p5": "^1.0.0",
     "react": "^16.13.0",
+    "react-alert": "^7.0.0",
+    "react-alert-template-basic": "^1.0.0",
     "react-card-flip": "^1.0.10",
     "react-debounce-render": "^6.0.0",
     "react-dom": "^16.13.0",

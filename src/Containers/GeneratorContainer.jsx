@@ -34,10 +34,10 @@ const GeneratorContainer = (props) => {
             <FileUpload 
                 setUploadedFile={setUploadedFile}
             />
-            <p className="num-colors-params">[min: 4]</p>
+            <p className="generator-params num-col-params">[min: 4]</p>
             <button className="subtract-col" onClick={handleAdjustColorNum}> - </button>
             <button className="add-col" onClick={handleAdjustColorNum}> + </button>
-            <p className="num-colors-params">[max: 6]</p>
+            <p className="generator-params  num-col-params">[max: 6]</p>
             <PaletteGenerator
                 uploadedFile={uploadedFile}
                 currentPalette={currentPalette}

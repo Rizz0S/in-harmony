@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useAlert } from 'react-alert';
 import ReactCardFlip from 'react-card-flip';
 
 
 const PaletteCard = (props) => {
   
   const dispatch = useDispatch();
+  const alert = useAlert();
 
-  const {name, color_hexes, id, username} = props.palette;
+  const {name, color_hexes, colorblind_accessible, num_likes, id, username} = props.palette;
+  const max_contrast = parseFloat(props.palette.max_contrast);
   
   const user = useSelector( (state) => state.userInfo.user)
   const token = useSelector( (state) => state.userInfo.token)
@@ -51,7 +54,7 @@ const PaletteCard = (props) => {
         .then(r => r.json())
         .then((resp) => {
           if (resp.message) {
-            alert(resp.message)
+            alert.show(resp.message)
         } else {
           dispatch(likePalette(resp))
           dispatch(updatePaletteLikes(resp, 1))
@@ -69,7 +72,7 @@ const PaletteCard = (props) => {
         .then(r => r.json())
         .then((resp) => {
           if (resp.message) {
-            alert(resp.message)
+            alert.show(resp.message)
         } else {
           dispatch(unlikePalette(resp))
           dispatch(updatePaletteLikes(resp, -1))
@@ -96,8 +99,9 @@ const PaletteCard = (props) => {
 
       <div className="palette-card-front">
         <div className="card-swatch-wrapper">
-          <p style={{position: "absolute", transform: "translate(-50%, -100%)", left: "50%", marginTop: -20}}>{name}</p>
+          <p style={{position: "absolute", transform: "translate(-50%, -100%)", left: "50%", marginTop: -20, fontSize: 18}}>{name}</p>
           {renderCardSwatches()}
+          {props.context === "showCreator" ? <p className="card-details" style={{fontStyle: "italic"}}>creator: <b>{username}</b></p> : null}
         </div>
          <i className="material-icons flip-card" onClick={handleCardFlip}>flip_to_back</i>
         <div className="like-button" onClick={handleLike}> {liked ? "♥" : "♡" } </div>
@@ -105,7 +109,9 @@ const PaletteCard = (props) => {
 
       <div className="palette-card-back">
         {renderColorHexes()}
-        {props.context === "gallery" ? <p>created by: {username}</p> : null}
+        <p className="card-details metric-details">Colorblind Accessible: {colorblind_accessible ? "✓" : "✕"}</p>
+        <p className="card-details metric-details">WCAG Compliant: {max_contrast >= 4.5 ? "✓" : "✕"}</p>
+        <p className="card-details">♥'s: <span style={{fontFamily: "'Roboto Mono', monospace"}}>{num_likes}</span></p>
         <i className="material-icons flip-card" onClick={handleCardFlip}>flip_to_front</i>
         <div className="like-button" onClick={handleLike}> {liked ? "♥" : "♡" } </div>
       </div>

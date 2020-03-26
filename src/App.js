@@ -2,8 +2,10 @@ import React from 'react';
 import './App.css';
 
 import {Route, Switch} from 'react-router-dom';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux'
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux'
+
+import { withAlert } from 'react-alert';
 
 import Profile from './Components/Profile';
 import About from './Static/About';
@@ -59,7 +61,7 @@ class App extends React.Component {
           this.props.setUser(resp)
           this.props.history.push("/");
         } else {
-          alert(resp.error)
+          this.props.alert.show(resp.error)
         }
       })
   }
@@ -79,7 +81,7 @@ class App extends React.Component {
           this.props.setUser(resp);
           this.props.history.push("/");
         } else {
-          alert(resp.error)
+          this.props.alert.show(resp.error)
         }
       })
   }
@@ -111,7 +113,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <img src={process.env.PUBLIC_URL + '/logo.png'} alt="click to show navigation bar" className="nav-toggle-img" onClick={this.handleShowNavClick}/>
+        <img src={process.env.PUBLIC_URL + '/logo.png'} alt="in harmony logo" className="nav-toggle-img" onClick={this.handleShowNavClick}/>
         <div className="navContainer">
             <NavBar 
               handleLogOut={this.handleLogOut} 
@@ -153,4 +155,8 @@ const setPalettes = (resp) => {
   }
 }
 
-export default withRouter(connect(null, {setUser, setPalettes})(App))
+export default withAlert()(
+  withRouter(
+    connect(null, {setUser, setPalettes})(App)
+    )
+  )

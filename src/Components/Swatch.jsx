@@ -21,7 +21,6 @@ class ColorPicker extends React.Component {
     
     componentWillUnmount() {
         this.wheelPicker.off('color:change', this.colorChangeCB)
-        // this.colorPicker.current.innerHTML = "";
     }
         
     handleCloseColorPicker = (e) => {
@@ -45,7 +44,7 @@ class ColorPicker extends React.Component {
 
 export default function Swatch  (props) {
 
-    let {id, color, changeSwatchColor} = props
+    let {id, color, changeSwatchColor, loading} = props
 
     const [showPicker, setShowPicker] = useState(false)
 
@@ -61,6 +60,7 @@ export default function Swatch  (props) {
         <div className="swatch-color-container">
             <div 
                 className="swatch-color"
+                key={loading + id}
                 id={props.id}
                 style={{backgroundColor: color}}
                 onClick={handleSwatchClick}>
@@ -70,6 +70,11 @@ export default function Swatch  (props) {
                         onColorChange={onColorChange}
                         setShowPicker={setShowPicker}
                     /> :
+                    null
+                }
+                {loading ?
+                    <i className="material-icons swatch-load-icon">hourglass_empty</i>
+                    :
                     null
                 }
             </div>

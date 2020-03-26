@@ -61,7 +61,53 @@ const findOutOfRangeHues = (palette) =>{
     })
 }
 
-function Metrics (props) {
+const MetricsContent = (props) => {
+
+    const {loading, metrics, problemPairings, renderProblemParings} = props;
+
+    return (
+            <>
+            <h3><i>Contrast Ratios</i></h3>
+            <p>The minimum contrast ratio is: <b>{metrics.minContrast[0].toFixed(2)}</b></p>
+            <div>
+                <div key={metrics.minContrast[0] + 1} className="metric-swatch" style={{backgroundColor: chroma(metrics.minContrast[1]).hex()}}/>
+                <div key={metrics.minContrast[0] + 2} className="metric-swatch" style={{backgroundColor: chroma(metrics.minContrast[2]).hex()}}/>
+            </div>
+            <div>
+                <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
+                    <div className="WCAG-info">It must be at least 4.5</div>
+                </div>
+                WCAG compliant: {metrics.minContrast[3] ? "✓" : "✕" }
+            </div>
+            <p>The maximum ratio contrast ratio is: <b>{metrics.maxContrast[0].toFixed(2)}</b></p>
+            <div>
+                <div key={metrics.maxContrast[0] + 1} className="metric-swatch" style={{backgroundColor: chroma(metrics.maxContrast[1]).hex()}}/>
+                <div key={metrics.maxContrast[0] + 2} className="metric-swatch" style={{backgroundColor: chroma(metrics.maxContrast[2]).hex()}}/>
+            </div>
+            <div>
+                <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
+                    <div className="WCAG-info">It must be at least 4.5</div>
+                </div>
+                WCAG compliant:  {metrics.maxContrast[3] ? "✓" : "✕" }
+            </div>
+            <h3><i>Color Blindness</i></h3>
+            {problemPairings.length > 0 ? 
+                <>
+                <p>Vulnerabilities:</p>
+                <div className="problem-pairing-container">
+                {renderProblemParings(problemPairings)}
+                </div>
+                </>
+            :
+                <p className="problem-pairing-container">Your palette is currently color-blind accessible. :^}</p>
+            }
+        </>
+    )
+}
+
+const DebounceMetricsContent = debounceRender(MetricsContent, 1000);
+
+const Metrics = (props) => {
 
     const dispatch = useDispatch();
     const token = useSelector( (state) => state.userInfo.token);
@@ -86,19 +132,27 @@ function Metrics (props) {
     const problemPairings = compareHues(hues);
 
     const renderProblemParings = (problemPairings) => {
-        return problemPairings.map((pairing) => {
+        return problemPairings.map((pairing, idx) => {
             return <div className="problem-pairing">
-                <div key={pairing[0]} className="card-swatch" style={{backgroundColor: chroma(pairing[0]).hex()}}/>
-                <div key={pairing[1]} className="card-swatch" style={{backgroundColor: chroma(pairing[1]).hex()}}/>
-                <p>Contrast ratio: {pairing[2].toFixed(2)}</p>
+                <div key={pairing[2] + '1'} className="metric-swatch" style={{backgroundColor: chroma(pairing[0]).hex()}}/>
+                <div key={pairing[2] + '2'} className="metric-swatch" style={{backgroundColor: chroma(pairing[1]).hex()}}/>
+                <p key={pairing[2] + '3'}>Contrast ratio: {pairing[2].toFixed(2)}</p>
             </div>
         })
     }
 
     useEffect(() => {
-        setTimeout(() => {setLoading(false)}, 1500)
-    }, [setLoading])
+        const handleLoading = (status) =>{
+            setLoading(status);
+        }
 
+        setTimeout(() => {handleLoading(false)}, 3000)
+
+        return function cleanup() {
+            handleLoading(true);
+        }
+    }, [setLoading, currentPalette])
+    
     const handleModalClick = () => {
         setShowModal(!showModal)
     }
@@ -110,6 +164,7 @@ function Metrics (props) {
 
         hexArr = hexArr.slice(0, numColors)
         const isColorblindAccessible = problemPairings.length === 0;
+        const max_contrast = metrics.maxContrast[0].toFixed(2);
 
         fetch('http://localhost:4000/palettes', {
             method: "POST",
@@ -120,7 +175,8 @@ function Metrics (props) {
             body: JSON.stringify({
                 name: paletteName,
                 colors: hexArr,
-                colorblind_accessible: isColorblindAccessible
+                colorblind_accessible: isColorblindAccessible,
+                max_contrast: max_contrast
             })
         })
         .then(r => r.json())
@@ -132,53 +188,30 @@ function Metrics (props) {
                 dispatch(addUserPalette(resp))
             }
         })
+        setShowModal(false);
     }
 
     return (
             <div className="metrics-container">
                 <h2 className="generator-header">Metrics</h2>
-                <h3><i>Contrast Ratios</i></h3>
-                <p>The minimum contrast ratio is: <b>{metrics.minContrast[0].toFixed(2)}</b></p>
-                <div>
-                    <div key={metrics.minContrast[0] + 1} className="card-swatch" style={{backgroundColor: chroma(metrics.minContrast[1]).hex()}}/>
-                    <div key={metrics.minContrast[0] + 2} className="card-swatch" style={{backgroundColor: chroma(metrics.minContrast[2]).hex()}}/>
-                </div>
-                <div>
-                    <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
-                        <div className="WCAG-info">It must be at least 4.5</div>
+                <div className="metrics-fade-in-wrapper">
+                    <DebounceMetricsContent 
+                        metrics={metrics}
+                        problemPairings={problemPairings}
+                        renderProblemParings={renderProblemParings}
+                    />
+                    <div className={loading ? "loading-logo-wrapper in" : "loading-logo-wrapper"}>
+                        <img src={process.env.PUBLIC_URL + '/logo.png'} alt="loading metrics" className="loading-logo"></img>
                     </div>
-                    WCAG compliant: {metrics.minContrast[3] ? "✓" : "✕" }
                 </div>
-                <p>The maximum ratio contrast ratio is: <b>{metrics.maxContrast[0].toFixed(2)}</b></p>
-                <div>
-                    <div key={metrics.maxContrast[0] + 1} className="card-swatch" style={{backgroundColor: chroma(metrics.maxContrast[1]).hex()}}/>
-                    <div key={metrics.maxContrast[0] + 2} className="card-swatch" style={{backgroundColor: chroma(metrics.maxContrast[2]).hex()}}/>
-                </div>
-                <div>
-                    <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
-                        <div className="WCAG-info">It must be at least 4.5</div>
-                    </div>
-                    WCAG compliant:  {metrics.maxContrast[3] ? "✓" : "✕" }
-                </div>
-                <h3><i>Color Blindness</i></h3>
-                {problemPairings.length > 0 ? 
-                    <>
-                    <p>Vulnerabilities:</p>
-                    <div className="problem-pairing-container">
-                    {renderProblemParings(problemPairings)}
-                    </div>
-                    </>
-                :
-                    <p className="problem-pairing-container">Your palette is currently color-blind accessible. :^}</p>
-                }
-            <button className = "save-palette-btn" onClick={handleModalClick}>Save to Gallery</button>
-            {showModal ? 
-                <SavePaletteModal 
-                    handleModalClick={handleModalClick}
-                    persistPalette={persistPalette}
-            /> :
-            null
-            }       
+                <button className = "save-palette-btn" onClick={handleModalClick}> <i className="material-icons-outlined save-icon">save</i>Save to Gallery</button>
+                {showModal ? 
+                    <SavePaletteModal 
+                        handleModalClick={handleModalClick}
+                        persistPalette={persistPalette}
+                /> :
+                null
+                }       
             </div>
     )    
 }
@@ -197,4 +230,6 @@ const addUserPalette = (palette) => {
     }
 }
 
-export default debounceRender(Metrics, 1500)
+export default debounceRender(Metrics, 500)
+
+// export default Metrics;

@@ -13,6 +13,7 @@ body:not(.keyboard-accessible) * {
 .mainContent {
   overflow: scroll;
   flex: 1;
+  /* height: calc(100% - 80px); */
 }
 
 html {
@@ -52,6 +53,7 @@ button, .upload-file-label, .filter-bar, input[type="submit"] {
   font-size: 13px;
   color: black;
   font-family: 'Roboto',sans-serif;
+  letter-spacing: 0.5px;
   border: 1px solid #114d52;
   margin: 2px;
   box-shadow: 1px 0.5px #114d52;  
@@ -59,6 +61,48 @@ button, .upload-file-label, .filter-bar, input[type="submit"] {
 
 button:active, label:active, input[type="submit"]:active {
   box-shadow: none;
+}
+
+.alert-wrapper {
+    background-color: #2b272754;
+    width: 100vw;
+    height: 100vh;
+    animation: fade-in 1.25s ease-in-out forwards
+}
+
+.alert {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: max-content;
+  width: 450px;
+  padding-bottom: 16px;
+  background-color: #670000ce;
+  text-align: center;
+  color: white;
+  border: 1px dotted rgb(255, 249, 239);
+  box-shadow: 1px 0.5px rgb(255, 249, 239);
+}
+
+.close-alert-wrapper {
+  text-align: right;
+}
+
+.close-alert-btn {
+  font-size: 20px;
+}
+
+.error-icon {
+  font-size: 22px;
+  vertical-align: middle;
+}
+
+.error-msg {
+  margin: 15px;
+  font-size: 15px;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.7px;
 }
 
 /* NavBar styling */
@@ -72,12 +116,12 @@ button:active, label:active, input[type="submit"]:active {
 .nav {
   display: flex;
   justify-content: space-evenly;
-  animation: fade-in 1.5s ease-out forwards;
 }
 
 .nav a {
-  font-size: 14px;
-  color: #114d52;
+  font-size: 15px;
+  /* font-weight: bold; */
+  color: #0e3d41;
   text-decoration: none;
   padding: 5px;
 }
@@ -93,12 +137,6 @@ button:active, label:active, input[type="submit"]:active {
   opacity: 1;
 }
 
-/* .nav a:hover {
-  background-color: rgb(255, 249, 239);
-  border: 1px solid #114d52;
-  margin: 2px;
-  box-shadow: 1px 0.5px #114d52; 
-} */
 
 .nav-toggle-img {
   position: absolute;
@@ -144,29 +182,48 @@ button:active, label:active, input[type="submit"]:active {
   margin: auto;
 }
 
+/* File Upload Styling */
+
+#file-upload {
+  display: none;
+}
+
+.file-upload {
+  margin-bottom: 30px;
+}
+.upload-file-label {
+  padding: 5px;
+}
+
 /* Generator Styling */
 
 
 .generator-container {
   position: relative;
-  height: 100%;
-}
-
-
-.generator {
-  height: 100%;
+  height: calc(100% - 30px);
+  width: 100%;
 }
 
 .build-palette {
+  height: calc(100% - 20px);
+  width: 60%;
   display: inline-block;
   vertical-align: top;
-  margin-right: 100px;
   margin-top: 50px;
 }
 
 .palette-container {
   margin: auto;
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.swatch-load-icon {
+  background-color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .swatch-color-container {
@@ -183,12 +240,15 @@ button:active, label:active, input[type="submit"]:active {
   box-shadow: 2px 1px black;
 }
 
-.num-colors-params {
-  display: inline;
+.generator-params  {
   color: rgb(63, 63, 63);
   padding: 0 5px;
   font-style: italic;
   font-size: 11px;
+}
+
+.num-col-params {
+  display: inline;
 }
 
 
@@ -213,20 +273,62 @@ button:active, label:active, input[type="submit"]:active {
 
 /* Metrics Styling */
 
+.loading-logo-wrapper {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  opacity: 0;
+  transition: 0.5s ease-in-out;
+}
+
+.loading-logo-wrapper.in {
+  opacity: 1;
+}
+
+.loading-logo {
+  height: 150px;
+  width: 150px;
+  align-self: center;
+  margin: auto;
+}
+
+.loading-logo-wrapper.in .loading-logo {
+  animation: spin 3s ease-in-out; 
+}
+
 .metrics-container {
   display: inline-flex;
   flex-direction: column;
   vertical-align: top;
-  margin-left: 100px;
   margin-top: 50px;
-  height: calc(100% - 50px);
+  height: calc(100% - 20px);
+  width: 40%;
+  min-width: 475px;
+}
+
+.metrics-fade-in-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  animation: fade-in 0.75s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards; 
 }
 
 .problem-pairing-container {
   flex: 1;
-  max-width: 500px;
 }
 
+.metric-swatch {
+  width: 30px;
+  height: 30px;
+  margin: 2px;
+  border: 1px solid rgb(165, 165, 165);
+  display: inline-block;
+}
 .problem-pairing {
   display: inline-block;
   margin: 0 5px;
@@ -276,23 +378,19 @@ button:active, label:active, input[type="submit"]:active {
 
 .save-palette-btn {
   justify-self: flex-end;
+  padding: 5px 5px;
   margin-bottom: 50px;
   align-self: center;
   width: fit-content;
+  font-size: 13.5px;
 }
 
-/* File Upload Styling */
-
-#file-upload {
-  display: none;
+.save-icon {
+  vertical-align: middle;
+  margin-right: 5px;
+  font-size: 14.5px;
 }
 
-.file-upload {
-  margin-bottom: 50px;
-}
-.upload-file-label {
-  padding: 5px;
-}
 
 /* Palette Card styling */
 
@@ -300,11 +398,18 @@ button:active, label:active, input[type="submit"]:active {
   padding: 20px;
   margin: 30px auto;
   width: fit-content;
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 300;
+  letter-spacing: 0.65px;
 }
 
 .filter-condition {
-  padding: 0 10px;
+  margin: 0 2px 0 12px;
+}
+
+.condition-spacer {
+  margin: 0 10px 0 10px;
+  font-size: 20px;
 }
 .palette-card-container {
   display: flex;
@@ -322,6 +427,7 @@ button:active, label:active, input[type="submit"]:active {
   overflow: hidden;
 }
 
+
 .palette-card-front {
   display: flex;
   flex-direction: column;
@@ -332,20 +438,27 @@ button:active, label:active, input[type="submit"]:active {
   position: relative;
 }
 
-
 .card-swatch {
   display: inline-block;
   height: 80px;
   width: 50px;
-  
 }
-
 
 .card-hex {
   background: white;
   width: 75px;
   display: inline-block;
   font-family: 'Roboto Mono', monospace;
+}
+
+.card-details {
+  font-size: 13.5px;
+  margin: 8px 0px;
+}
+
+.metric-details {
+  display: inline-block;
+  margin: 8px 10px;
 }
 
 .like-button {
@@ -360,7 +473,7 @@ button:active, label:active, input[type="submit"]:active {
   position: absolute;
   bottom: 0;
   left: 0;
-  margin-left: 7px 
+  margin-left: 7px;
 }
 
 /*  Modal Stylings */
@@ -446,3 +559,7 @@ button:active, label:active, input[type="submit"]:active {
   to {opacity: 1;}
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

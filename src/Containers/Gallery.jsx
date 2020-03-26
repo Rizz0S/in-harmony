@@ -6,29 +6,40 @@ const Gallery = (props) => {
 
 
   const [filterColorblindAccessible, setFilterColorblindAccessible] = useState(false);
+  const [sortPopular, setSortPopular] = useState(false);
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   const allPalettes = useSelector( (state) => state.palettesInfo.all);
 
   const renderPaletteCards = (palettesArr) => {
+    let palettesToRender = palettesArr.slice()
+
     if (filterSearchTerm) {
-      palettesArr = palettesArr.filter((palette) => {
+      palettesToRender = palettesToRender.filter((palette) => {
         if (palette.name.includes(filterSearchTerm) || palette.username.includes(filterSearchTerm)) {
           return palette;
         }
       })
     }
 
-    return palettesArr.map((palette) => {
+    if (sortPopular) {
+      palettesToRender = palettesToRender.sort((palette1, palette2) => palette2.num_likes - palette1.num_likes)
+    }
+
+    return palettesToRender.map((palette) => {
       return <PaletteCard
         key={palette.id}
         palette={palette}
-        context="gallery"
+        context="showCreator"
         />
     })
   }
   
   const handleFilterColorblind = () => {
     setFilterColorblindAccessible(!filterColorblindAccessible);
+  }
+
+  const handleSortPopular = () => {
+    setSortPopular(!sortPopular);
   }
 
   const handleFilterSearchTerm = (e) => {
@@ -48,6 +59,17 @@ const Gallery = (props) => {
         checked={filterColorblindAccessible}
         onChange={handleFilterColorblind}
         />
+
+      <label htmlFor="sort-popular" className="filter-condition">Sort by Most Popular:</label>
+      <input 
+        name="sort-popular"
+        id="sort-popular"
+        
+        type="checkbox" 
+        checked={sortPopular}
+        onChange={handleSortPopular}
+        />
+
       <label htmlFor="filter-search-term" className="filter-condition">Search:</label>
       <input 
         name="filter-search-term"

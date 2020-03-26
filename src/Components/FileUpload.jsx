@@ -1,22 +1,29 @@
 import React, { useRef } from 'react';
+import { useAlert } from 'react-alert';
 
 const BYTES_PER_MB = 1_000_000;
 
 const FileUpload = (props) => {
   
+    const alert = useAlert();
     const fileInput = useRef(null);
 
     const initHandleFileUpload = (e) => {
       e.preventDefault();
-      const fileSize = (fileInput.current.files[0].size / BYTES_PER_MB);
 
-      if (fileSize > 2) {
-        alert("I'm sorry, but currently only files smaller 2MB are accepted.")
-      } else if (fileInput.current.files[0]) {
-          readFile(fileInput.current.files[0])
-            .then((response) => {
-              props.setUploadedFile(response.dataURL)
-            });
+      if (fileInput.current.files[0]) {
+        const fileSize = (fileInput.current.files[0].size / BYTES_PER_MB);
+
+        if (fileSize > 2) {
+          alert.show("I'm sorry, but currently only files smaller 2MB are accepted.");
+        } else {
+            readFile(fileInput.current.files[0])
+              .then((response) => {
+                props.setUploadedFile(response.dataURL)
+              });
+        }
+      } else {
+        alert.show("Hm... looks like something went wrong while you were uploading the file. Try again?")
       }
     }
 
@@ -52,6 +59,7 @@ const FileUpload = (props) => {
             >
               Load file...
             </label>
+            <p className="generator-params">[max size: 2MB]</p>
         </div>
       )
     
