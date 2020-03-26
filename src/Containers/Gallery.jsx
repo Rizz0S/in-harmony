@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux'
 
 const Gallery = (props) => {
 
-
+  const [initLoadDone, setInitLoadDone] = useState(false);
   const [filterColorblindAccessible, setFilterColorblindAccessible] = useState(false);
   const [sortPopular, setSortPopular] = useState(false);
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
@@ -25,11 +25,14 @@ const Gallery = (props) => {
       palettesToRender = palettesToRender.sort((palette1, palette2) => palette2.num_likes - palette1.num_likes)
     }
 
-    return palettesToRender.map((palette) => {
+    if (palettesToRender.length) {
+      setTimeout(() => {setInitLoadDone(true)}, (palettesToRender.length * 100 + 2000));
+    }
+    return palettesToRender.map((palette, idx) => {
       return <PaletteCard
-        key={palette.id}
         palette={palette}
         context="showCreator"
+        idx={idx}
         />
     })
   }
@@ -79,7 +82,7 @@ const Gallery = (props) => {
         onChange={handleFilterSearchTerm}
         />
     </div>
-    <div className="palette-card-container" >
+    <div className={`palette-card-container ${initLoadDone ? 'animation-complete' : null}`} >
       {filterColorblindAccessible ? renderPaletteCards(allPalettes.filter((palette) => palette.colorblind_accessible)) : renderPaletteCards(allPalettes)}
     </div>
     </>

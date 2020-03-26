@@ -59,7 +59,7 @@ class App extends React.Component {
         if (resp.token) {
           localStorage.token = resp.token;
           this.props.setUser(resp)
-          this.props.history.push("/");
+          this.props.history.push("/profile");
         } else {
           this.props.alert.show(resp.error)
         }
@@ -79,7 +79,7 @@ class App extends React.Component {
         if (resp.token) {
           localStorage.token = resp.token;
           this.props.setUser(resp);
-          this.props.history.push("/");
+          this.props.history.push("/profile");
         } else {
           this.props.alert.show(resp.error)
         }

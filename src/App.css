@@ -63,6 +63,11 @@ button:active, label:active, input[type="submit"]:active {
   box-shadow: none;
 }
 
+a, a:visited {
+  color: black;
+  text-decoration: 1px dashed black;
+}
+
 .alert-wrapper {
     background-color: #2b272754;
     width: 100vw;
@@ -120,7 +125,6 @@ button:active, label:active, input[type="submit"]:active {
 
 .nav a {
   font-size: 15px;
-  /* font-weight: bold; */
   color: #0e3d41;
   text-decoration: none;
   padding: 5px;
@@ -274,6 +278,9 @@ button:active, label:active, input[type="submit"]:active {
 /* Metrics Styling */
 
 .loading-logo-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
   position: absolute;
   top: 0;
   height: 100%;
@@ -281,21 +288,24 @@ button:active, label:active, input[type="submit"]:active {
   background-color: white;
   opacity: 0;
   transition: 0.5s ease-in-out;
+  z-index: -1;
 }
 
 .loading-logo-wrapper.in {
   opacity: 1;
+  z-index: 1;
 }
 
 .loading-logo {
   height: 150px;
   width: 150px;
-  align-self: center;
+  cursor: none !important;
   margin: auto;
 }
 
 .loading-logo-wrapper.in .loading-logo {
-  animation: spin 3s ease-in-out; 
+  animation: spin 3s ease-in-out;
+  cursor: none;
 }
 
 .metrics-container {
@@ -316,6 +326,12 @@ button:active, label:active, input[type="submit"]:active {
   justify-content: center;
   opacity: 0;
   animation: fade-in 0.75s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards; 
+}
+
+.metrics-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .problem-pairing-container {
@@ -344,7 +360,7 @@ button:active, label:active, input[type="submit"]:active {
 }
 
 .WCAG-is-compliant:hover .WCAG-info {
-  display: block;
+  display: inline-block;
 }
 
 .WCAG-is-compliant {
@@ -357,13 +373,16 @@ button:active, label:active, input[type="submit"]:active {
   position: absolute;
   top: 50%;
   transform: translate(-100%, -50%);
+  display: block;
   background-color: rgb(255, 249, 239);;
   border: 1px solid #114d52;;
   box-shadow: 2px 1px #114d52;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
   color: black;
   padding: 5px;
-  margin-left: -100px;
-  white-space: nowrap;
+  margin-left: -125px;
+  width: 225px;
   animation: fade-in 1.5s ease-out forwards;
 }
 
@@ -371,9 +390,10 @@ button:active, label:active, input[type="submit"]:active {
   content: "";
   position: absolute;
   top: 50%;
+  left: 100%;
   border-bottom: 1px solid#114d52;
   width: 100px;
-  margin-left: 5px;
+  /* margin-left: 5px; */
 }
 
 .save-palette-btn {
@@ -432,6 +452,13 @@ button:active, label:active, input[type="submit"]:active {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  opacity: 0;
+  animation: fade-in 2s ease-in-out forwards;
+}
+
+.animation-complete .palette-card-front {
+  opacity: 1;
+  animation: none;
 }
 
 .card-swatch-wrapper {

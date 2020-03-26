@@ -97,7 +97,7 @@ const PaletteCard = (props) => {
       infinite={true}
     >
 
-      <div className="palette-card-front">
+      <div className="palette-card-front" style={{animationDelay: `${props.idx * 0.1}s`}}>
         <div className="card-swatch-wrapper">
           <p style={{position: "absolute", transform: "translate(-50%, -100%)", left: "50%", marginTop: -20, fontSize: 18}}>{name}</p>
           {renderCardSwatches()}
