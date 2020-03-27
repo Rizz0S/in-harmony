@@ -63,45 +63,45 @@ const findOutOfRangeHues = (palette) =>{
 
 const MetricsContent = (props) => {
 
-    const {loading, metrics, problemPairings, renderProblemParings} = props;
+    const {metrics, problemPairings, renderProblemParings} = props;
 
     return (
-            <>
-            <h3><i>Contrast Ratios</i></h3>
-            <p>The minimum contrast ratio is: <b>{metrics.minContrast[0].toFixed(2)}</b></p>
-            <div>
-                <div key={metrics.minContrast[0] + 1} className="metric-swatch" style={{backgroundColor: chroma(metrics.minContrast[1]).hex()}}/>
-                <div key={metrics.minContrast[0] + 2} className="metric-swatch" style={{backgroundColor: chroma(metrics.minContrast[2]).hex()}}/>
-            </div>
-            <div>
-                <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
-                    <div className="WCAG-info">It must be at least 4.5</div>
+            <div className="metrics-content">
+                <h3><i>Contrast Ratios</i></h3>
+                <p>The minimum contrast ratio is: <b>{metrics.minContrast[0].toFixed(2)}</b></p>
+                <div>
+                    <div key={metrics.minContrast[0] + 1} className="metric-swatch" style={{backgroundColor: chroma(metrics.minContrast[1]).hex()}}/>
+                    <div key={metrics.minContrast[0] + 2} className="metric-swatch" style={{backgroundColor: chroma(metrics.minContrast[2]).hex()}}/>
                 </div>
-                WCAG compliant: {metrics.minContrast[3] ? "✓" : "✕" }
-            </div>
-            <p>The maximum ratio contrast ratio is: <b>{metrics.maxContrast[0].toFixed(2)}</b></p>
-            <div>
-                <div key={metrics.maxContrast[0] + 1} className="metric-swatch" style={{backgroundColor: chroma(metrics.maxContrast[1]).hex()}}/>
-                <div key={metrics.maxContrast[0] + 2} className="metric-swatch" style={{backgroundColor: chroma(metrics.maxContrast[2]).hex()}}/>
-            </div>
-            <div>
-                <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
-                    <div className="WCAG-info">It must be at least 4.5</div>
+                <div>
+                    <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
+                        <div className="WCAG-info">To be compliant with WCAG guidelines, the contrast ratio must be at least <b>4.5</b>.</div>
+                    </div>
+                    WCAG compliant: {metrics.minContrast[3] ? "✓" : "✕" }
                 </div>
-                WCAG compliant:  {metrics.maxContrast[3] ? "✓" : "✕" }
-            </div>
-            <h3><i>Color Blindness</i></h3>
-            {problemPairings.length > 0 ? 
-                <>
-                <p>Vulnerabilities:</p>
-                <div className="problem-pairing-container">
-                {renderProblemParings(problemPairings)}
+                <p>The maximum ratio contrast ratio is: <b>{metrics.maxContrast[0].toFixed(2)}</b></p>
+                <div>
+                    <div key={metrics.maxContrast[0] + 1} className="metric-swatch" style={{backgroundColor: chroma(metrics.maxContrast[1]).hex()}}/>
+                    <div key={metrics.maxContrast[0] + 2} className="metric-swatch" style={{backgroundColor: chroma(metrics.maxContrast[2]).hex()}}/>
                 </div>
-                </>
-            :
-                <p className="problem-pairing-container">Your palette is currently color-blind accessible. :^}</p>
-            }
-        </>
+                <div>
+                    <div className="WCAG-is-compliant"><i className="material-icons help-icon">help_outline</i>
+                        <div className="WCAG-info">To be compliant with WCAG guidelines, the contrast ratio must be at least <b>4.5</b>.</div>
+                    </div>
+                    WCAG compliant:  {metrics.maxContrast[3] ? "✓" : "✕" }
+                </div>
+                <h3><i>Color Blindness</i></h3>
+                {problemPairings.length > 0 ? 
+                    <>
+                    <p>Vulnerabilities:</p>
+                    <div className="problem-pairing-container">
+                    {renderProblemParings(problemPairings)}
+                    </div>
+                    </>
+                :
+                    <p className="problem-pairing-container">Your palette is currently color-blind accessible. :^}</p>
+                }
+        </div>
     )
 }
 
@@ -166,7 +166,7 @@ const Metrics = (props) => {
         const isColorblindAccessible = problemPairings.length === 0;
         const max_contrast = metrics.maxContrast[0].toFixed(2);
 
-        fetch('http://localhost:4000/palettes', {
+        fetch('https://in-harmony.herokuapp.com/palettes', {
             method: "POST",
             headers: {
                 "content-type": "application/json",
