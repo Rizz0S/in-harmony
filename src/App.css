@@ -465,6 +465,10 @@ a, a:visited {
   position: relative;
 }
 
+.card-swatch-wrapper p {
+  width: 100%;
+}
+
 .card-swatch {
   display: inline-block;
   height: 80px;
