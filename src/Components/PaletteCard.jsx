@@ -43,7 +43,7 @@ const PaletteCard = (props) => {
   const handleLike = () => {
 
     if (!liked) {
-      fetch(`http://localhost:4000/like`, {
+      fetch(`https://in-harmony.herokuapp.com/like`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -61,7 +61,7 @@ const PaletteCard = (props) => {
         }
         })
     } else {
-      fetch(`http://localhost:4000/unlike`, {
+      fetch(`https://in-harmony.herokuapp.com/unlike`, {
         method: "POST",
         headers: {
           "content-type": "application/json",

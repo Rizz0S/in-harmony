@@ -166,7 +166,7 @@ const Metrics = (props) => {
         const isColorblindAccessible = problemPairings.length === 0;
         const max_contrast = metrics.maxContrast[0].toFixed(2);
 
-        fetch('http://localhost:4000/palettes', {
+        fetch('https://in-harmony.herokuapp.com/palettes', {
             method: "POST",
             headers: {
                 "content-type": "application/json",

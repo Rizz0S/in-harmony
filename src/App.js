@@ -24,7 +24,7 @@ class App extends React.Component {
 
   componentDidMount() {
     
-    fetch("http://localhost:4000/palettes")
+    fetch("https://in-harmony.herokuapp.com/palettes")
       .then(r => r.json())
       .then((palettesArr) => {
         this.props.setPalettes(palettesArr)
@@ -32,7 +32,7 @@ class App extends React.Component {
     
 
     if (localStorage.token) {
-      fetch("http://localhost:4000/persist", {
+      fetch("https://in-harmony.herokuapp.com/persist", {
         headers: {
           "Authorization": `Bearer ${localStorage.token}`
         }
@@ -47,7 +47,7 @@ class App extends React.Component {
 
   
   handleLoginSubmit = (userInfo) => {
-    fetch(`http://localhost:4000/login`, {
+    fetch(`https://in-harmony.herokuapp.com/login`, {
       method: "POST",
       headers: {
         "content-type": "application/json"
@@ -67,7 +67,7 @@ class App extends React.Component {
   }
 
   handleRegisterSubmit = (userInfo) => {
-    fetch(`http://localhost:4000/users`, {
+    fetch(`https://in-harmony.herokuapp.com/users`, {
       method: "POST",
       headers: {
         "content-type": "application/json"
