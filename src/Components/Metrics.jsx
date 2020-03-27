@@ -94,12 +94,13 @@ const MetricsContent = (props) => {
                 {problemPairings.length > 0 ? 
                     <>
                     <p>Vulnerabilities:</p>
+                    <p style={{fontSize: 13, fontStyle:"italic"}}>See about page for more details.</p>
                     <div className="problem-pairing-container">
                     {renderProblemParings(problemPairings)}
                     </div>
                     </>
                 :
-                    <p className="problem-pairing-container">Your palette is currently color-blind accessible. :^}</p>
+                    <p className="problem-pairing-container">Your palette is currently colorblind accessible. :^}</p>
                 }
         </div>
     )
