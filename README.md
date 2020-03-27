@@ -5,7 +5,7 @@
 Find a palette for everyone.
 
 ### What was this website built with?
-I made this website with JavaScript, React, and Redux. I'm also utilizing the Javascript packages iro.js, get-pixels, chroma.js, react-flip, and react-alert. The back-end is built with Rails, postgresql, and complete with JWT Auth and B-Crypt password protection.
+I made this website with JavaScript, React, and Redux. I'm also utilizing the Javascript packages iro.js, get-pixels, chroma.js, react-card-flip, and react-alert. The back-end is built with Rails, postgresql, and complete with JWT Auth and B-Crypt password protection.
 
 Link to back-end repo: https://github.com/Rizz0S/in-harmony-backend
 
