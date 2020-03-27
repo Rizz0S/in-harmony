@@ -564,21 +564,16 @@ a, a:visited {
   max-width: 900px;
   margin: auto;
 }
-.about-paragraph {
+.about p {
   /* padding: 0 300px; */
+  font-family: 'Roboto', sans-serif;
   text-align: justify;
 }
 
-.about-rules {
-  max-width: 400px;
-  margin: auto;
-  justify-self: center;
-  /* padding-left: 300px; */
-}
 
 .about a, .about a:visited {
-  color: rgb(43, 94, 131);
-  text-decoration-style: dashed;
+  color: #114d52;
+  text-decoration-style: dotted;
 }
 
 @keyframes fade-in {
