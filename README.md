@@ -4,6 +4,8 @@
 
 Find a palette for everyone.
 
+Hosted at: https://www.inharmony.app/
+
 ### What was this website built with?
 I made this website with JavaScript, React, and Redux. I'm also utilizing the Javascript packages iro.js, get-pixels, chroma.js, react-card-flip, and react-alert. The back-end is built with Rails, postgresql, and complete with JWT Auth and B-Crypt password protection.
 
